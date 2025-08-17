@@ -11,9 +11,7 @@ reset_address = {
     4: 0x0004D157
 }
 
-# prints all addresses, redundant but gives me a visual
-for address in reset_address.values():
-    print(hex(address))
+reset_active = False # boolean that checks if a save is active (using the game's reset/resetti flag)
 
 # function reads the given address in its argument, and converts it to a value
 def reset_flag(reset_byte):
@@ -23,12 +21,19 @@ def reset_flag(reset_byte):
     except (IndexError, SyntaxError, NameError) as terminal_error: # TODO! SyntaxError and NameError don't work. Why? :c
         return "THERE WAS AN ERROR READING THE GIVEN BYTE (" + str(hex(reset_byte)) + ")", terminal_error
 
+# prints all addresses, redundant but gives me a visual. can be hidden in final code
+for address in reset_address.values():
+    print(hex(address))
+
 # goes through each key in the reset_address dictionary and passes it through the argument of reset_flag to convert them into usable numbers.
 for address in reset_address:
-    print(reset_flag(reset_address[address]))
+    print(reset_flag(reset_address[address])) # this can be hidden in the final code as its really just for debugging
+    if reset_flag(reset_address[address]) == 0:
+        reset_active = False
+    else:
+        reset_active = True
 
-# older version for reference when i inevitably forget how this works lol
-#print(reset_flag(reset_address[1]))
-#print(reset_flag(reset_address[2]))
-#print(reset_flag(reset_address[3]))
-#print(reset_flag(reset_address[4]))
+if reset_active:
+    print("A save is actively opened, or the reset flag has been tripped. VALUE:" + str(reset_active))
+else:
+    print("The save is currently inactive/closed. VALUE: " + str(reset_active))
