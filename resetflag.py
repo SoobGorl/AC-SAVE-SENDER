@@ -45,3 +45,8 @@ root.withdraw()
 file_path = filedialog.askopenfilename()
 
 print(file_path)
+
+# TODO! check if file is a .gci
+# TODO! check if file has animal crossing header
+# TODO! check if file has the reset addresses (if not, its unlikely its acgc)
+# the error checking can be reused for these purposes
