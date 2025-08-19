@@ -18,7 +18,7 @@ def reset_flag(reset_byte):
     try:
         acsavefile.seek(reset_byte) # the address is inserted here to search
         return acsavefile.read(1)[0] # use hex() to convert this to hexcode. [0] here displays it as a number/hex value.
-    except (IndexError, SyntaxError, NameError) as terminal_error: # TODO! SyntaxError and NameError don't work. Why? :c
+    except (IndexError, SyntaxError, NameError) as terminal_error: # TODO! SyntaxError and NameError don't work. Why? :c is this redundant? maybe.
         return "THERE WAS AN ERROR READING THE GIVEN BYTE (" + str(hex(reset_byte)) + ")", terminal_error
 
 # prints all addresses, redundant but gives me a visual. can be hidden in final code
@@ -37,3 +37,11 @@ if reset_active:
     print("A save is actively opened, or the reset flag has been tripped. VALUE:" + str(reset_active))
 else:
     print("The save is currently inactive/closed. VALUE: " + str(reset_active))
+
+import tkinter as tk # credit to tomvodi/dimakin for this script
+from tkinter import filedialog
+root = tk.Tk()
+root.withdraw()
+file_path = filedialog.askopenfilename()
+
+print(file_path)
