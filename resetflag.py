@@ -16,17 +16,65 @@ save_likelyhood = { # defines what the file_trust number means for humans
     0: "NOT A VALID FILE",
     1: "VALID .GCI FILE",
     2: "VALID RESET ADDRESSES",
-    3: "VALID GAME HEADER" # not yet implemented
+    3: "VALID GAME HEADER", # not yet implemented
+    4: "UNKNOWN FILE, SEMI-VALID"
 }
 def trust_reporter(): # prints out trust number, then the trust message/state
     print("SAVE LIKELYHOOD: " + str(file_trust) + ", " + save_likelyhood[file_trust])
 
 # -------- FILE OPENING ---------
-root = tk.Tk() # creates file-specific open dialog through tkinter
-root.withdraw() # (credit to tomvodi/dimakin on stack exchange for this script)
-file_path = filedialog.askopenfilename() # prompts user to select file
-file_extension = pathlib.Path(file_path).suffix # gets the file extension from file in filepath
-acsavefile = open(file_path, mode = "rb") # opens selected file in read binary mode + names it as a variable
+#root = tk.Tk() # creates file-specific open dialog through tkinter
+#root.withdraw() # (credit to tomvodi/dimakin on stack exchange for this script)
+#file_path = filedialog.askopenfilename() # prompts user to select file
+#file_extension = pathlib.Path(file_path).suffix # gets the file extension from file in filepath
+#acsavefile = open(file_path, mode = "rb") # opens selected file in read binary mode + names it as a variable
+acsavefile = open("RESETFLAG.gci", mode = "rb")
+
+
+
+def bytes_to_string(address, byte_length):
+    acsavefile.seek(address)
+    return acsavefile.read(byte_length).decode('UTF-8')
+
+
+
+print(bytes_to_string(0x0, 25))
+
+#if str(acsavefile.read(25)) == "b'GAFE01\xff\x01DobutsunomoriP_MU'":
+#    print("check good")
+#else:
+#    print("check bad")
+
+acsavefile.seek(0x40)
+actext_check = acsavefile.read(15)
+
+acsavefile.seek(0x60)
+acsavefile.read(8)
+
+
+#print(header_check)
+#if actext_check == "GAFE01\xff\x01DobutsunomoriP_MU":
+#    print("header has passed check")
+#else:
+#    "header not passed"
+#print(actext_check)
+#if actext_check == "Animal Crossing":
+#    print("animal crossing subheader passed")
+#else:
+#    "subheader not passed"
+
+sys.exit()
+# look for "ANIMAL CROSSING" text
+# look for town name
+# look for villagers
+# separate file validity checks from flag checking
+# check flags ONLY after validity
+
+# security will be a larger issue but these are basic checks to see if the file is mostly an AC file
+"""check after file is recieved if safe
+parse entire file and make sure its correct and cant execute bad stuff
+when you recieve a file (clientside) verify that file is safe
+if all verifications succeed and is valid data/save file, then use it"""
 
 # -------- GCI HANDLING ---------
 valid_gci = False # sets initial value to False, as it hasn't been checked yet
@@ -111,3 +159,9 @@ elif error_flag: # find out how to specify this lol, some universal error thing.
     sys.exit()
 else:
     print("The save is currently inactive/closed. RESET_ACTIVE STATE: " + str(reset_active))
+
+# ------ EDGECASE ERROR, NOT GCI BUT SUCCEEDED ALL OTHER CHECKS ------
+if not valid_gci and file_trust == 2:
+    logging.warning("INVALID .GCI EXTENSION. GAME SHARK SAVE? SUCCESSFULLY RAN ALL OTHER TESTS.")
+else:
+    pass # REMOVE THIS ENTIRE THING WHEN THE ACTUAL CHECK WORKS,
