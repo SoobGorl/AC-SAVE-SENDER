@@ -1,91 +1,4 @@
-import tkinter as tk
-from tkinter import filedialog
-import logging
-import pathlib
-import sys
-
-# TODO! check flags ONLY after validity
-
-# security will be a larger issue but these are basic checks to see if the file is mostly an AC file
-"""check after file is recieved if safe
-parse entire file and make sure its correct and cant execute bad stuff
-when you recieve a file (clientside) verify that file is safe
-if all verifications succeed and is valid data/save file, then use it"""
-
-
-# ------------ DEBUG ------------
-debug = True # prints out a bunch of debug info if True
-error_flag = False # bandaid fix for error reporting
-
-# ------- TRUST REPORTING -------
-file_trust = 0 # value changes through checks to ensure that the selected file is an ACGC one
-save_likelyhood = { # defines what the file_trust number means for humans
-    0: "NOT A VALID FILE",
-    1: "VALID .GCI FILE",
-    2: "VALID RESET ADDRESSES",
-    3: "VALID GAME HEADER",
-    4: "VALID AC SUBHEADER",
-    -1: "UNKNOWN FILE, SEMI-VALID"
-}
-def trust_reporter(): # prints out trust number, then the trust message/state
-    print("SAVE LIKELYHOOD: " + str(file_trust) + ", " + save_likelyhood[file_trust])
-
-# -------- FILE OPENING ---------
-root = tk.Tk() # creates file-specific open dialog through tkinter
-root.withdraw() # (credit to tomvodi/dimakin on stack exchange for this script)
-file_path = filedialog.askopenfilename() # prompts user to select file
-file_extension = pathlib.Path(file_path).suffix # gets the file extension from file in filepath
-acsavefile = open(file_path, mode = "rb") # opens selected file in read binary mode + names it as a variable
-
-
-
-
-
-
-
-def bytes_to_string(address, byte_length):
-    acsavefile.seek(address)
-    return acsavefile.read(byte_length)
-
-if debug:
-    print("FILE'S GAMEID HEADER: " + str(bytes_to_string(0x0, 15)))
-    print("FILE'S 'AC' SUBHEADER: " + str(bytes_to_string(0x40, 15)))
-    print("FILE'S TOWN NAME: " + str(bytes_to_string(0x60, 8)))
-
-if bytes_to_string(0x0, 25) == b'GAFE01\xff\x01DobutsunomoriP_MU':
-    file_trust = 3
-    if debug:
-        # print("The GAMEID header is correct.")
-        trust_reporter()
-else:
-    file_trust = 0
-    if debug:
-        logging.warning("GAMEID HEADER DOES NOT MATCH!")
-
-if bytes_to_string(0x40, 15) == b'Animal Crossing':
-    file_trust = 4
-    if debug:
-        # print("The 'AC' subheader is correct.")
-        trust_reporter()
-else:
-    file_trust = 0
-    if debug:
-        logging.warning("AC SUBHEADER DOES NOT MATCH!")
-
-# -------- GCI HANDLING ---------
-valid_gci = False # sets initial value to False, as it hasn't been checked yet
-if file_extension == ".gci": # if the selected file has the extension .gci, then continue code
-    valid_gci = True
-    file_trust = 1 # sets trust value to one. originally added the value, but this is more fool-proof, though the program is linear
-else:
-    file_trust = 0 # for safety :)
-    logging.critical("SELECTED FILE DID NOT CONTAIN .GCI EXTENSION")
-
-# ------------ DEBUG ------------ # may be redundant...
-if debug: # reports if file is a .GCI
-    print("Chosen file = " + file_path)
-    # print("Is .GCI? = " + str(valid_gci))
-    trust_reporter()
+from trust_evaluation import *
 
 # --- DEFINE RESET ADDRESSES ---
 reset_address = {
@@ -116,13 +29,6 @@ def reset_flag(reset_byte): # function reads the given address in its argument, 
 reset_active = False # boolean that checks if a save is active (using the game's reset/resetti flag)
 # the below goes through each key in the reset_address dictionary and passes it through the argument of reset_flag
 # to convert them into usable numbers.
-
-if not error_flag: # if the error flag isn't tripped, then set file trust to 2
-    file_trust = 2
-elif error_flag:
-    logging.critical("You're not supposed to be here.")
-    sys.exit()
-
 for address in reset_address:
     if debug:
         print(reset_flag(reset_address[address])) # prints out the current value from the above addresses in number form
@@ -136,10 +42,6 @@ for address in reset_address:
     else:
         reset_active = True
 
-# ------------ DEBUG ------------
-if debug:
-    trust_reporter() # print current trust state
-
 # ------- RESET REPORTING --------
 if reset_active:
     print("A save is actively opened, or the reset flag has been tripped. RESET_ACTIVE STATE:" + str(reset_active))
@@ -148,7 +50,3 @@ elif error_flag: # find out how to specify this lol, some universal error thing.
     sys.exit()
 else:
     print("The save is currently inactive/closed. RESET_ACTIVE STATE: " + str(reset_active))
-
-# ------ EDGECASE ERROR, NOT GCI BUT SUCCEEDED ALL OTHER CHECKS ------
-if not valid_gci and file_trust == -1:
-    logging.warning("INVALID .GCI EXTENSION. GAME SHARK SAVE? SUCCESSFULLY RAN ALL OTHER TESTS.")
