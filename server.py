@@ -15,7 +15,6 @@ print("[LISTENING] Server is listening.")
 
 
 
-
 while True:
     conn, addr = server.accept()
     print(f"[NEW CONNECTION] {addr} connected.")
@@ -36,3 +35,6 @@ while True:
     file.close() # closes file
     conn.close() # closes communication between client and server
     print(f"[DISCONNECTED] {addr} force disconnected.")
+
+# do something like "if command_send is sent" then execute stuff. have the client send commands hidden through the client
+# this makes it horribly unsecure (you could just modify the code) but I don't care, this is for 2 people and meant to be private-ish

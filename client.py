@@ -14,9 +14,9 @@ except:
     print("couldn't connect, server may be closed") # if its closed, throw this
     quit()
 
-print(f"CONNECTED TO SERVER AT {ADDR}")
+# print(f"CONNECTED TO SERVER AT {ADDR}")
 
-input("UPLOAD / DOWNLOAD / OVERRIDE")
+# input("UPLOAD / DOWNLOAD / OVERRIDE")
 
 
 file = open("test.txt", "r")

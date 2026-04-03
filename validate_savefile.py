@@ -14,13 +14,11 @@ def print(*args, log_file='log_validation.txt', **kwargs):
     with open(log_file, 'a') as file:
         file.write(full_output + '\n')
 
-
 def bytes_to_string(address, byte_length): # turns things to strings so I can parse them easier
     acsavefile.seek(address)
     return acsavefile.read(byte_length)
 
 reset_address = [0x00027156, 0x00027157, 0x0004D156, 0x0004D157]
-
 
 def reset_flag(reset_byte): # function reads the given address in its argument, and converts the value inside into a number
     try:
@@ -29,7 +27,6 @@ def reset_flag(reset_byte): # function reads the given address in its argument, 
     except (IndexError, SyntaxError, NameError) as terminal_error: # this is sort of redundant, since it checks for the bytes? NO IT DOESNT?????
         file_trust = 0
         print("[IO CRITICAL] COULD NOT LOCATE BYTE (OUT OF RANGE?)")
-
 
 def file_management(x):
 
@@ -95,23 +92,5 @@ def file_management(x):
         else:
             print("[IO INFO] SAVE IS CLOSED")
 
-
-
-file_management("open")
-file_management("validate")
-file_management("state")
-file_management("close")
-
-
-# -------- RESET HANDLING --------
- # boolean that checks if a save is active (using the game's reset/resetti flag)
-# the below goes through each key in the reset_address dictionary and passes it through the argument of reset_flag
-# to convert them into usable numbers.
-
-
-
-while True:
-    pass
-
-
+# WRITE IF IT PASSED CHECKS FOR VALIDATION
 

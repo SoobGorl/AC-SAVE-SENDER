@@ -11,7 +11,7 @@ when you recieve a file (clientside) verify that file is safe
 if all verifications succeed and is valid data/save file, then use it"""
 
 # ------------ DEBUG ------------
-debug = False # prints out a bunch of debug info if True
+debug = True # prints out a bunch of debug info if True
 error_flag = False # bandaid fix for error reporting, DONT CHANGE TO TRUE!
 
 # ------- TRUST REPORTING -------
