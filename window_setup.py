@@ -1,14 +1,28 @@
 import tkinter as tk
+from tkinter import filedialog
 from tkinter import messagebox
+import pathlib
 
 # implement button states so you cant press stuff when yuo shouldnt lol
+# implement the checkboxes being checked when you open a file/do the thing
+# implement the ACTUAL checks (for validity) so you dont open a .mp3 as your save lol
+
+# write the paths and extensions in a text file somewhere so when the window launches
+
+# for unspecified error (exception, etc) itll just be error_00
+
+# WINDOW CONFIG
 
 window = tk.Tk()
 window.geometry("200x300")
 window.resizable(False, False)
-window.title("ACSS")
+
+window.title("SASE") # sable able save enabler lol, credits to salvage
 dir_window_logo = tk.PhotoImage(file="icon.png")
 window.iconphoto(True, dir_window_logo)
+
+
+# FIRST TIME SETUP
 
 label_title = tk.Label(window, text="FIRST TIME SETUP")
 label_title.pack(padx=0, pady=0)
@@ -17,31 +31,91 @@ dir_setup_image = tk.PhotoImage(file="setup_windowlogo.png")
 setup_image = tk.Label(window, image=dir_setup_image)
 setup_image.pack()
 
+# STEP ONE
 
 label_step1 = tk.Label(window, text="Step 1:")
 label_step1.pack()
-button_step1 = tk.Button(window, text="SELECT YOUR SAVE FILE")
-button_step1.pack()
+
+def cmd_open_save():
+    file_path = filedialog.askopenfilename()  # prompts user to select file
+    file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
+    # acsavefile = open(file_path, mode="rb")  # opens selected file in read binary mode + names it as a variable
+    print(file_path)
+    print(file_extension)
+    # do the checking part after this
+    # ERROR_01 if save is not right format or some check is bad with it (allow continue in future for servers who dnc about the file being sent)
+
+step1_frame = tk.Frame(window)
+step1_frame.columnconfigure(0, weight=1)
+
+button_step1 = tk.Button(step1_frame, text="SELECT YOUR SAVE FILE", command=cmd_open_save)
+button_step1.grid(row=0, column=1)
+
+checkbox_step1 = tk.Checkbutton(step1_frame)
+checkbox_step1.grid(row=0, column=0)
+
+step1_frame.pack()
+
+# STEP TWO
 
 label_step2 = tk.Label(window, text="Step 2:")
 label_step2.pack()
-button_step2 = tk.Button(window, text="SELECT YOUR GAME ROM")
-button_step2.pack()
+
+def cmd_open_rom():
+    file_path = filedialog.askopenfilename()  # prompts user to select file
+    file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
+    print(file_path)
+    print(file_extension)
+    # ERROR_02 if the rom is in an odd format (.exe), only accept .rvz and .iso (and the other one). Can skip this one, and continue
+
+step2_frame = tk.Frame(window)
+step2_frame.columnconfigure(0, weight=1)
+
+button_step2 = tk.Button(step2_frame, text="SELECT YOUR GAME ROM", command=cmd_open_rom)
+button_step2.grid(row=0, column=1)
+
+checkbox_step2 = tk.Checkbutton(step2_frame)
+checkbox_step2.grid(row=0, column=0)
+
+step2_frame.pack()
+
+# STEP 3
 
 label_step3 = tk.Label(window, text="Step 3:")
 label_step3.pack()
-button_step3 = tk.Button(window, text="SELECT DOLPHIN.EXE")
-button_step3.pack()
+
+def cmd_open_dolphin():
+    file_path = filedialog.askopenfilename()  # prompts user to select file
+    file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
+    print(file_path)
+    print(file_extension)
+    # ERROR_03 file is not an exe or has word "dolphin" in it (see if dolphin has file headers?)
+
+step3_frame = tk.Frame(window)
+step3_frame.columnconfigure(0, weight=1)
+
+button_step3 = tk.Button(step3_frame, text="SELECT YOUR GAME ROM", command=cmd_open_dolphin)
+button_step3.grid(row=0, column=1)
+
+checkbox_step3 = tk.Checkbutton(step3_frame)
+checkbox_step3.grid(row=0, column=0)
+
+step3_frame.pack()
+
+# STEP 4
 
 label_step4 = tk.Label(window, text="Step 4:")
 label_step4.pack()
+
 def cmd_button_connect():
-    messagebox.showerror(title="ERROR_01", message="STEPS HAVE NOT BEEN COMPLETED!\n\n"
+    messagebox.showerror(title="ERROR_04", message="STEPS HAVE NOT BEEN COMPLETED!\n\n"
                                                    "MAKE SURE ALL BOXES HAVE BEEN CHECKED BEFORE CONTINUING.")
-button_step4 = tk.Button(window, text="~ CONNECT! ~", command=cmd_button_connect)
+
+
+button_step4 = tk.Button(window, text="     CONNECT!     ", command=cmd_button_connect)
 button_step4.pack()
 
-
+# CLOSING AND RUN
 
 def on_closing():
     if messagebox.askyesno(title="Quit?", message="Are you sure you want to quit?\n\n"
