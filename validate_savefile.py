@@ -78,7 +78,7 @@ def file_management(x):
 
         # if even 1 check fails, throw validation error
         if file_trust == 3:
-            pass
+            print("[INFO] LOOKS GOOD TO ME BOSS")
         else:
             print("[IO CRITICAL] FILE NOT VALID")
             # sys.exit()

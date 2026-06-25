@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 import pathlib
-
 import validate_savefile
 from validate_savefile import *
 
@@ -13,6 +12,11 @@ from validate_savefile import *
 # write the paths and extensions in a text file somewhere so when the window launches
 
 # for unspecified error (exception, etc) itll just be error_00
+
+
+# TODO GO THROUGH ALL THE BUTTONS AND MAKE THEM WORK BECAUSE OMG THERE ARE SO MANY "FILE_PATH" VARIABLES THAT ARE STANDINS AND NOW IDK WHAT WORKS AND DOESNT!!!! AHHH
+
+# weird bug where "" (nothing) is being printed to the console due to the print function injection, this probably means some print or return statement is leaking somewhere??
 
 # WINDOW CONFIG
 
@@ -40,14 +44,20 @@ label_step1 = tk.Label(window, text="Step 1:")
 label_step1.pack()
 
 def cmd_open_save():
-    validate_savefile.file_path = filedialog.askopenfilename()  # prompts user to select file
+    try:
+        validate_savefile.file_path = filedialog.askopenfilename(initialdir="C:/Users/Alska/OneDrive/Documents/") # make this the default roms folder that dolphin saves to
+    except: # if the file path doesnt exist, just open the basic one
+        validate_savefile.file_path = filedialog.askopenfilename()  # prompts user to select file
     # (title='Choose a file')
     # file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
     # acsavefile = open(file_path, mode="rb")  # opens selected file in read binary mode + names it as a variable
     # print(file_path)
     # print(file_extension)
     # validate_savefile.file_path = file_path
-    whole_shebang(validate_savefile.file_path)
+    if validate_savefile.file_path == "": # discovered that closing the file popup without selecting crashses so thats fun
+        pass
+    else:
+        whole_shebang(validate_savefile.file_path)
     # do the checking part after this
     # ERROR_01 if save is not right format or some check is bad with it (allow continue in future for servers who dnc about the file being sent)
 
@@ -68,7 +78,10 @@ label_step2 = tk.Label(window, text="Step 2:")
 label_step2.pack()
 
 def cmd_open_rom():
-    file_path = filedialog.askopenfilename()  # prompts user to select file
+    try:
+        file_path = filedialog.askopenfilename(initialdir="C:/Users/Alska/OneDrive/Documents/") # make this like a "games" folder inside the default dolphin install directory (so "/dolphin/games"
+    except: # if the file path doesnt exist, just open the basic one
+        file_path = filedialog.askopenfilename()  # prompts user to select file
     file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
     print(file_path)
     print(file_extension)
@@ -91,7 +104,10 @@ label_step3 = tk.Label(window, text="Step 3:")
 label_step3.pack()
 
 def cmd_open_dolphin():
-    file_path = filedialog.askopenfilename()  # prompts user to select file
+    try:
+        file_path = filedialog.askopenfilename(initialdir="C:/Users/Alska/OneDrive/Documents/")  # make this the default dolphin installation folder
+    except:  # if the file path doesnt exist, just open the basic one
+        file_path = filedialog.askopenfilename()  # prompts user to select file
     file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
     print(file_path)
     print(file_extension)
