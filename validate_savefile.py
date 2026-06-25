@@ -4,6 +4,7 @@ import builtins
 from datetime import datetime
 
 file_path = "RESETFLAG.gci" # change this whenever opening a save
+debug = False
 
 # override print statement show it shows the time and also saves each line to a file (very inefficient, sue me)
 def print(*args, log_file='log_validation.txt', **kwargs):
@@ -42,14 +43,15 @@ def file_management(x):
         acsavefile.close()
         print(f"[IO] CLOSING FILE: {file_path}")
 
-    if x == "validate":
+    if x == "validate": # oh my god this is so messy, fix this eventually
 
         global file_trust
         file_trust = 0
 
-        print("[DEBUG] FILE GAMEID HEADER: " + str(bytes_to_string(0x0, 15)))
-        print("[DEBUG] FILE SUBHEADER: " + str(bytes_to_string(0x40, 15)))
-        print("[DEBUG] FILE TOWN NAME: " + str(bytes_to_string(0x60, 8)))
+        if debug == True:
+            print("[DEBUG] FILE GAMEID HEADER: " + str(bytes_to_string(0x0, 15)))
+            print("[DEBUG] FILE SUBHEADER: " + str(bytes_to_string(0x40, 15)))
+            print("[DEBUG] FILE TOWN NAME: " + str(bytes_to_string(0x60, 8)))
 
         # check extension
         if file_extension == ".gci":  # if the selected file has the extension .gci, then continue code
@@ -79,7 +81,7 @@ def file_management(x):
             pass
         else:
             print("[IO CRITICAL] FILE NOT VALID")
-            sys.exit()
+            # sys.exit()
 
     if x == "state":
         for address in reset_address:
@@ -94,3 +96,8 @@ def file_management(x):
 
 # WRITE IF IT PASSED CHECKS FOR VALIDATION
 
+def whole_shebang(filepath):
+    file_management("open")
+    file_management("validate")
+    # file_management("state")
+    file_management("close")

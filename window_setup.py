@@ -3,6 +3,9 @@ from tkinter import filedialog
 from tkinter import messagebox
 import pathlib
 
+import validate_savefile
+from validate_savefile import *
+
 # implement button states so you cant press stuff when yuo shouldnt lol
 # implement the checkboxes being checked when you open a file/do the thing
 # implement the ACTUAL checks (for validity) so you dont open a .mp3 as your save lol
@@ -37,11 +40,14 @@ label_step1 = tk.Label(window, text="Step 1:")
 label_step1.pack()
 
 def cmd_open_save():
-    file_path = filedialog.askopenfilename()  # prompts user to select file
-    file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
+    validate_savefile.file_path = filedialog.askopenfilename()  # prompts user to select file
+    # (title='Choose a file')
+    # file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
     # acsavefile = open(file_path, mode="rb")  # opens selected file in read binary mode + names it as a variable
-    print(file_path)
-    print(file_extension)
+    # print(file_path)
+    # print(file_extension)
+    # validate_savefile.file_path = file_path
+    whole_shebang(validate_savefile.file_path)
     # do the checking part after this
     # ERROR_01 if save is not right format or some check is bad with it (allow continue in future for servers who dnc about the file being sent)
 
@@ -94,7 +100,7 @@ def cmd_open_dolphin():
 step3_frame = tk.Frame(window)
 step3_frame.columnconfigure(0, weight=1)
 
-button_step3 = tk.Button(step3_frame, text="SELECT YOUR GAME ROM", command=cmd_open_dolphin)
+button_step3 = tk.Button(step3_frame, text="SELECT YOUR DOLPHIN", command=cmd_open_dolphin)
 button_step3.grid(row=0, column=1)
 
 checkbox_step3 = tk.Checkbutton(step3_frame)
