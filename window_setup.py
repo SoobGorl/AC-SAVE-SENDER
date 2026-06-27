@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 import pathlib
-import validate_savefile
-from validate_savefile import *
+import client_validation
+from client_validation import *
 
 # implement button states so you cant press stuff when yuo shouldnt lol
 # implement the checkboxes being checked when you open a file/do the thing
@@ -17,6 +17,10 @@ from validate_savefile import *
 # TODO GO THROUGH ALL THE BUTTONS AND MAKE THEM WORK BECAUSE OMG THERE ARE SO MANY "FILE_PATH" VARIABLES THAT ARE STANDINS AND NOW IDK WHAT WORKS AND DOESNT!!!! AHHH
 
 # weird bug where "" (nothing) is being printed to the console due to the print function injection, this probably means some print or return statement is leaking somewhere??
+
+# far future (make like a dictionary of all acceptable headers/save flags in all games to make it easier), but this is probably somewhat compatible for all games, sho I should implement other game functionality
+
+# if you select an actual file, then select a bad one, does it set the file to that?? it shouldnt (test it better), also, what do about being able to select a new file after u selected the old one??
 
 # WINDOW CONFIG
 
@@ -39,27 +43,35 @@ setup_image = tk.Label(window, image=dir_setup_image)
 setup_image.pack()
 
 # STEP ONE
-
-label_step1 = tk.Label(window, text="Step 1:")
-label_step1.pack()
+# TODO: turn this into a class?? its sort of awkward going through it linearly like this, although it works (could be cleaned up)
 
 def cmd_open_save():
     try:
-        validate_savefile.file_path = filedialog.askopenfilename(initialdir="C:/Users/Alska/OneDrive/Documents/") # make this the default roms folder that dolphin saves to
+        client_validation.file_path = filedialog.askopenfilename(title="Select Your Save File", initialdir="C:/Users/Alska/OneDrive/Documents/") # make this the default roms folder that dolphin saves to
     except: # if the file path doesnt exist, just open the basic one
-        validate_savefile.file_path = filedialog.askopenfilename()  # prompts user to select file
+        client_validation.file_path = filedialog.askopenfilename(title="Select Your Save File")  # prompts user to select file
     # (title='Choose a file')
     # file_extension = pathlib.Path(file_path).suffix  # gets the file extension from file in filepath
     # acsavefile = open(file_path, mode="rb")  # opens selected file in read binary mode + names it as a variable
     # print(file_path)
     # print(file_extension)
     # validate_savefile.file_path = file_path
-    if validate_savefile.file_path == "": # discovered that closing the file popup without selecting crashses so thats fun
+    if client_validation.file_path == "": # discovered that closing the file popup without selecting crashses so thats fun
         pass
     else:
-        whole_shebang(validate_savefile.file_path)
-    # do the checking part after this
+        whole_shebang(client_validation.file_path)
+        if client_validation.file_trust == 3:
+            checkbox_step1.config(state="normal")
+            checkbox_step1.select()
+            checkbox_step1.config(state="disabled")
+        else:
+            messagebox.showerror(title="ERROR_", message="FILE WAS NOT RECOGNIZED AS A VALID SAVE FILE!\n\n"
+                                                         "PLEASE SELECT A NEW ONE.") # in the future print like the save function numbers (i think this can be done by splitting off "message" and changing that only?
+
     # ERROR_01 if save is not right format or some check is bad with it (allow continue in future for servers who dnc about the file being sent)
+
+label_step1 = tk.Label(window, text="Step 1:")
+label_step1.pack()
 
 step1_frame = tk.Frame(window)
 step1_frame.columnconfigure(0, weight=1)
@@ -69,6 +81,7 @@ button_step1.grid(row=0, column=1)
 
 checkbox_step1 = tk.Checkbutton(step1_frame)
 checkbox_step1.grid(row=0, column=0)
+checkbox_step1.config(state="disabled")
 
 step1_frame.pack()
 
@@ -134,7 +147,7 @@ def cmd_button_connect():
                                                    "MAKE SURE ALL BOXES HAVE BEEN CHECKED BEFORE CONTINUING.")
 
 
-button_step4 = tk.Button(window, text="     CONNECT!     ", command=cmd_button_connect)
+button_step4 = tk.Button(window, text="     CONNECT!     ", command=cmd_button_connect) # make the spaces here not load bearing and use padding lol
 button_step4.pack()
 
 # CLOSING AND RUN

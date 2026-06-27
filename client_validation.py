@@ -54,6 +54,7 @@ def file_management(x):
             print("[DEBUG] FILE TOWN NAME: " + str(bytes_to_string(0x60, 8)))
 
         # check extension
+        # GCS is a new file extension I've seen?? I think it needs to be converted first, test this later and add a special warning message for it to ask user to convert it first
         if file_extension == ".gci":  # if the selected file has the extension .gci, then continue code
             file_trust = 1  # sets trust value to one. originally added the value, but this is more fool-proof, though the program is linear
         else:
@@ -101,3 +102,11 @@ def whole_shebang(filepath):
     file_management("validate")
     # file_management("state")
     file_management("close")
+
+# GAME ISO/RVZ LOOSE VALIDATION:
+# TODO: FIND SOME PARTS OF THE ISO THAT ARE LIKE THE SAME ACROSS GAME DISKS/RVZ, THEN PASS IT ALONGE WINDOWS_SETUP
+
+# STUFF HERE
+
+# DOLPHIN VALIDATION:
+# TODO: IDK HOW YOU WOULD VALIDATE THAT DOLPHIN IS DOLPHIN. :DDD

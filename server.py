@@ -1,5 +1,5 @@
 import socket
-from validate_savefile import *
+from client_validation import *
 
 IP = socket.gethostbyname(socket.gethostname())
 PORT = 4455
